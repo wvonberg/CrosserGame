@@ -227,8 +227,10 @@ class EnemyCharacter(GameObject):
     def move(self, max_width):
         if self.x_pos <= 10:
             self.SPEED = abs(self.SPEED)
+            self.image = pygame.transform.flip(self.image, 1, 0)
         elif self.x_pos >= max_width - 40:
             self.SPEED = -abs(self.SPEED)
+            self.image = pygame.transform.flip(self.image, 1, 0)
         self.x_pos += self.SPEED
 
         if self.SPEED >= 14:
