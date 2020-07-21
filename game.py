@@ -1,6 +1,7 @@
 # access to pygame library
 import pygame
 
+pygame.init()
 # set window size and define basic colors
 SCREEN_TITLE = 'Treasure Seeker'
 SCREEN_WIDTH = 800
@@ -13,6 +14,9 @@ clock = pygame.time.Clock()
 pygame.font.init()
 font = pygame.font.SysFont('times new roman',75,True,False)
 sc_font = pygame.font.SysFont('times new roman',30,True,True)
+
+winner = pygame.mixer.Sound('you_win.wav')
+crashed = pygame.mixer.Sound('crashed.wav')
 
 
 class Game:
@@ -35,6 +39,13 @@ class Game:
         did_win = False
         direction = 0
         self.score = score
+        treasure = pygame.mixer.Sound('treasure.wav')
+
+        pygame.mixer.Sound.play(treasure)
+        pygame.mixer.music.stop()
+
+        pygame.mixer.music.load('music_back.wav')
+        pygame.mixer.music.play(-1)
 
         player_character = PlayerCharacter('Knight1a.png', 375, 700, 50, 50)
 
@@ -102,6 +113,9 @@ class Game:
             if player_character.detect_collision(enemy_0) == True:
                 is_game_over = True
                 did_win = False
+                pygame.mixer.music.stop()
+                pygame.mixer.Sound.play(crashed)
+                pygame.mixer.music.stop()
                 text = font.render('You Were Caught!', True, BLACK_COLOR)
                 self.game_window.blit(text, (110, 300))
                 pygame.display.update()
@@ -111,6 +125,9 @@ class Game:
             if player_character.detect_collision(enemy_1) == True:
                 is_game_over = True
                 did_win = False
+                pygame.mixer.music.stop()
+                pygame.mixer.Sound.play(crashed)
+                pygame.mixer.music.stop()
                 text = font.render('You Were Caught!', True, BLACK_COLOR)
                 self.game_window.blit(text, (110, 175))
                 pygame.display.update()
@@ -120,15 +137,21 @@ class Game:
             if player_character.detect_collision(enemy_2) == True:
                 is_game_over = True
                 did_win = False
+                pygame.mixer.music.stop()
+                pygame.mixer.Sound.play(crashed)
+                pygame.mixer.music.stop()
                 text = font.render('You Were Caught!', True, BLACK_COLOR)
                 self.game_window.blit(text, (110, 175))
                 pygame.display.update()
-                clock.tick(1)
+                clock.tick()
                 break
 
             if player_character.detect_collision(enemy_3) == True:
                 is_game_over = True
                 did_win = False
+                pygame.mixer.music.stop()
+                pygame.mixer.Sound.play(crashed)
+                pygame.mixer.music.stop()
                 text = font.render('You Were Caught!', True, BLACK_COLOR)
                 self.game_window.blit(text, (110, 175))
                 pygame.display.update()
@@ -138,10 +161,14 @@ class Game:
             elif player_character.detect_collision(treasure) == True:
                 is_game_over = True
                 did_win = True
+                pygame.mixer.music.stop()
+                pygame.mixer.Sound.play(winner)
+                pygame.mixer.music.stop()
                 text = font.render('WINNER!', True, BLACK_COLOR)
                 self.game_window.blit(text, (245, 350))
                 pygame.display.update()
                 clock.tick(1)
+                pygame.time.wait(900)
                 break
             pygame.display.update()
             clock.tick(self.TICK_RATE)
@@ -236,8 +263,6 @@ class EnemyCharacter(GameObject):
         if self.SPEED >= 14:
             self.SPEED = 14
 
-
-pygame.init()
 
 new_game = Game('background.png', SCREEN_TITLE, SCREEN_WIDTH, SCREEN_HEIGHT)
 new_game.run_game_loop(1, 0)
