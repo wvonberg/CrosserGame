@@ -20,12 +20,18 @@ sc_font = pygame.font.SysFont('times new roman',30,True,True)
 winner = pygame.mixer.Sound('assets/sounds/you_win.wav')
 crashed = pygame.mixer.Sound('assets/sounds/crashed.wav')
 
-class Sounds:
-    _sound_cache = {}
+class CachingMetaclass(type):
     def __getattr__(self, name):
-        if name not in self.sound_cache:
-            self.sound_cache[name] = pygame.mixer.Sound('assets/sounds/%s.wav' % name)
-        return self.sound_cache[name]
+        return self._fetch_from_class(name)
+
+class Sounds(metaclass=CachingMetaclass):
+    _sound_cache = {}
+
+    @classmethod
+    def _fetch_from_class(cls, name):
+        if name not in cls._sound_cache:
+            cls._sound_cache[name] = pygame.mixer.Sound('assets/sounds/%s.wav' % name)
+        return cls._sound_cache[name]
 
 class Game:
     # FPS - typical std rate is 60
