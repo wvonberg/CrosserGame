@@ -22,13 +22,13 @@ crashed = pygame.mixer.Sound('assets/sounds/crashed.wav')
 
 class CachingMetaclass(type):
     def __getattr__(self, name):
-        return self._fetch_from_class(name)
+        return self._fetch_from_cache(name)
 
 class Sounds(metaclass=CachingMetaclass):
     _sound_cache = {}
 
     @classmethod
-    def _fetch_from_class(cls, name):
+    def _fetch_from_cache(cls, name):
         if name not in cls._sound_cache:
             cls._sound_cache[name] = pygame.mixer.Sound('assets/sounds/%s.wav' % name)
         return cls._sound_cache[name]
