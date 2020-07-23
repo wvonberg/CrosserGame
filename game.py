@@ -21,8 +21,11 @@ winner = pygame.mixer.Sound('assets/sounds/you_win.wav')
 crashed = pygame.mixer.Sound('assets/sounds/crashed.wav')
 
 class Sounds:
-    treasure = pygame.mixer.Sound('assets/sounds/treasure.wav')
-    bg_music = pygame.mixer.Sound('assets/sounds/music_back.wav')
+    _sound_cache = {}
+    def __getattr__(self, name):
+        if name not in self.sound_cache:
+            self.sound_cache[name] = pygame.mixer.Sound('assets/sounds/%s.wav' % name)
+        return self.sound_cache[name]
 
 class Game:
     # FPS - typical std rate is 60
@@ -48,7 +51,7 @@ class Game:
 
         pygame.mixer.Sound.play(Sounds.treasure)
 
-        pygame.mixer.music.load(Sounds.bg_music) # I think this works?
+        pygame.mixer.music.load('assets/sounds/music_back.wav') # I think this works?
         pygame.mixer.music.play(-1)
 
         player_character = PlayerCharacter('assets/sprites/Knight1a.png', 375, 700, 50, 50)
