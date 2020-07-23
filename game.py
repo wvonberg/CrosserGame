@@ -43,12 +43,12 @@ class Game:
         self.score = score
         # "treasure" is a bad name for this, since this is really the treasure /sound/.
         # consider making a Sound class that stores pointers to all your game sounds
-        treasure = pygame.mixer.Sound('assets/sound/treasure.wav')
+        treasure = pygame.mixer.Sound('assets/sounds/treasure.wav')
 
         pygame.mixer.Sound.play(treasure)
         pygame.mixer.music.stop()
 
-        pygame.mixer.music.load('assets/sound/music_back.wav')
+        pygame.mixer.music.load('assets/sounds/music_back.wav')
         pygame.mixer.music.play(-1)
 
         player_character = PlayerCharacter('assets/sprites/Knight1a.png', 375, 700, 50, 50)
