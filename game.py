@@ -276,9 +276,9 @@ class EnemyCharacter(GameObject):
         if self.SPEED >= 14:
             self.SPEED = 14
 
+if __name__ == '__main__':
+    new_game = Game('assets/images/background.png', SCREEN_TITLE, SCREEN_WIDTH, SCREEN_HEIGHT)
+    new_game.run_game_loop(1, 0)
 
-new_game = Game('assets/images/background.png', SCREEN_TITLE, SCREEN_WIDTH, SCREEN_HEIGHT)
-new_game.run_game_loop(1, 0)
-
-pygame.quit()
-quit()
+    pygame.quit()
+    quit()
