@@ -8,16 +8,17 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 800
 WHITE_COLOR = (255, 255, 255)
 BLACK_COLOR = (0, 0, 0)
-BACK = ('Background.png')
+BACK = ('assets/images/Background.png')
 # clock update for updating game events and frames
+# Do this in your class too
 clock = pygame.time.Clock()
 pygame.font.init()
+
+# These shouldn't be loaded here, they need to be in your Game class
 font = pygame.font.SysFont('times new roman',75,True,False)
 sc_font = pygame.font.SysFont('times new roman',30,True,True)
-
-winner = pygame.mixer.Sound('you_win.wav')
-crashed = pygame.mixer.Sound('crashed.wav')
-
+winner = pygame.mixer.Sound('assets/sounds/you_win.wav')
+crashed = pygame.mixer.Sound('assets/sounds/crashed.wav')
 
 class Game:
     # FPS - typical std rate is 60
@@ -32,6 +33,7 @@ class Game:
         self.game_window.fill(WHITE_COLOR)
         pygame.display.set_caption(title)
         background_image = pygame.image.load(image_path)
+        # "self.image" is not a good variable name. what is this image? what is it for? rename it
         self.image = pygame.transform.scale(background_image, (width, height))
 
     def run_game_loop(self, level_speed, score):
@@ -39,29 +41,34 @@ class Game:
         did_win = False
         direction = 0
         self.score = score
-        treasure = pygame.mixer.Sound('treasure.wav')
+        # "treasure" is a bad name for this, since this is really the treasure /sound/.
+        # consider making a Sound class that stores pointers to all your game sounds
+        treasure = pygame.mixer.Sound('assets/sound/treasure.wav')
 
         pygame.mixer.Sound.play(treasure)
         pygame.mixer.music.stop()
 
-        pygame.mixer.music.load('music_back.wav')
+        pygame.mixer.music.load('assets/sound/music_back.wav')
         pygame.mixer.music.play(-1)
 
-        player_character = PlayerCharacter('Knight1a.png', 375, 700, 50, 50)
+        player_character = PlayerCharacter('assets/sprites/Knight1a.png', 375, 700, 50, 50)
 
-        enemy_0 = EnemyCharacter('bad_guy.png', 20, 600, 70, 70)
+        # Instead of listing these like this, why not create an EnemyManager class
+        # which can help manage these.
+        enemy_0 = EnemyCharacter('assets/sprites/bad_guy.png', 20, 600, 70, 70)
         enemy_0.SPEED *= level_speed
 
-        enemy_1 = EnemyCharacter('zombie.png', 600, 450, 70, 70)
+        enemy_1 = EnemyCharacter('assets/sprites/zombie.png', 600, 450, 70, 70)
         enemy_1.SPEED *= level_speed - 2.5
 
-        enemy_2 = EnemyCharacter('plaguey.png', 500, 300, 70, 70)
+        enemy_2 = EnemyCharacter('assets/sprites/plaguey.png', 500, 300, 70, 70)
         enemy_2.SPEED *= level_speed - 4.5
 
-        enemy_3 = EnemyCharacter('grimmy.png', 150, 200, 100, 100)
+        enemy_3 = EnemyCharacter('assets/sprites/grimmy.png', 150, 200, 100, 100)
         enemy_3.SPEED *= level_speed - 6.5
 
-        treasure = GameObject('treasure.png', 375, 20, 50, 50)
+        # you've now reused this same variable name for something totally different
+        treasure = GameObject('assets/sprites/treasure.png', 375, 20, 50, 50)
 
         # main game loop, updates for all actions until is_game_over equal True
         while not is_game_over:
@@ -100,6 +107,9 @@ class Game:
             enemy_0.move(self.width)
             enemy_0.draw(self.game_window)
 
+            # Using that EnemyManager class you could just do
+            # EnemyManager.get_enemy_for_level_speed(level_speed)
+            # instead of having all these if statements
             if level_speed > 3:
                 enemy_1.move(self.width)
                 enemy_1.draw(self.game_window)
@@ -110,6 +120,7 @@ class Game:
                 enemy_3.move(self.width)
                 enemy_3.draw(self.game_window)
 
+            # create a self.game_over() function that does all this, so you DRY
             if player_character.detect_collision(enemy_0) == True:
                 is_game_over = True
                 did_win = False
@@ -173,6 +184,7 @@ class Game:
             pygame.display.update()
             clock.tick(self.TICK_RATE)
 
+        # a lot of this should be in your game_over() function instead
         while is_game_over == True and did_win == False:
             # self.game_window.fill(WHITE_COLOR)
             text = font.render("Press (C) to try again", True, BLACK_COLOR)
@@ -191,7 +203,8 @@ class Game:
         if did_win == True:
             self.run_game_loop(level_speed + 0.5, score + 1)
 
-
+# a lot of the below would do well to be based on the Sprite class
+# there are things like built-in collision detection functions, etc in those
 
 class GameObject:
 
@@ -264,7 +277,7 @@ class EnemyCharacter(GameObject):
             self.SPEED = 14
 
 
-new_game = Game('background.png', SCREEN_TITLE, SCREEN_WIDTH, SCREEN_HEIGHT)
+new_game = Game('assets/images/background.png', SCREEN_TITLE, SCREEN_WIDTH, SCREEN_HEIGHT)
 new_game.run_game_loop(1, 0)
 
 pygame.quit()
